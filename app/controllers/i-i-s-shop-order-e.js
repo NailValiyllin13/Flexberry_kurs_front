@@ -59,12 +59,13 @@ export default EditFormController.extend({
     });
   },
 
-  blockfield:Ember.observer('model.dirtyType', function() {
-    let model_status = this.get('model.dirtyType');
+  blockfield:Ember.observer('model.isNew', function() {
+    //let model_status = this.get('model.dirtyType');
     const status = this.get('model.status');
     const dirtyAttributes = this.get('model.hasDirtyAttributes');
-    let bool_blocked = (status === OrderStatusEnum.Canceled || status === OrderStatusEnum.Paid) && !dirtyAttributes;
-    this.set('isPaid', bool_blocked)
+    let bool_blocked = (status === OrderStatusEnum.Paid) && !dirtyAttributes;
+    this.set('isPaid', bool_blocked);
+    //this.set('model.validations', false);
   }),
 
   summTotall:Ember.observer('model.orderItem.@each.{amount,priceWTaxes}', function() {
@@ -130,7 +131,7 @@ export default EditFormController.extend({
       if (lookupProperties.relationName === 'product') {
         this.setProductLookupPredicate();
       }
-    },    
+    },
   },
 
   setProductLookupPredicate(record) {

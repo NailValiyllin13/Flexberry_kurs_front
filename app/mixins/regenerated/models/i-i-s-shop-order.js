@@ -61,7 +61,10 @@ export let ValidationRules = {
       validator('presence',{
         presence: true,
         disabled: computed('model.status', function() {
-          return this.get('model.status') !== OrderStatusEnum.Paid;
+          const status = this.get('model.status');
+          const dirtyAttributes = this.get('model.hasDirtyAttributes');
+          let bool_blocked = (status === OrderStatusEnum.Canceled || status === OrderStatusEnum.Paid) && !dirtyAttributes;
+          return (this.get('model.status') !== OrderStatusEnum.Paid) || bool_blocked; //|| this.get('model.isPaid');
         })
       }),
     ],

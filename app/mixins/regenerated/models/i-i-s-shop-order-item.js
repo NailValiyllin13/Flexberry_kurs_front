@@ -3,6 +3,8 @@ import $ from 'jquery';
 import DS from 'ember-data';
 import { validator } from 'ember-cp-validations';
 import { attr, belongsTo, hasMany } from 'ember-flexberry-data/utils/attributes';
+import OrderStatusEnum from '../../../enums/i-i-s-shop-order-status';
+import { computed } from '@ember/object';
 
 export let Model = Mixin.create({
   amount: DS.attr('number'),
@@ -20,6 +22,14 @@ export let ValidationRules = {
       validator('number', { allowString: true, allowBlank: true, integer: true }),
       validator('check-product-amount', {
         showSuggestions: false,
+        presence: true,
+        disabled: computed('model.order.status', function() {
+          const status = this.get('model.order.status');
+          const dirtyAttributes = this.get('model.hasDirtyAttributes');
+          let bool_blocked = (status === OrderStatusEnum.Paid) && !dirtyAttributes;
+          var i = (this.get('model.order.status') == OrderStatusEnum.Paid) || bool_blocked; 
+          return (this.get('model.order.status') == OrderStatusEnum.Paid) || bool_blocked; //|| this.get('model.isPaid');
+        })              
        }),
       validator('number-zero'),
     ],
